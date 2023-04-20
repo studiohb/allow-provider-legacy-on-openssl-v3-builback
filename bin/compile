@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+echo "beginning"
+set -e
+
+cat /etc/ssl/openssl.cnf \
+  | tr '\n' '\r' \
+  | sed -e 's/\[provider_sect\]\rdefault = default_sect/[provider_sect]\rdefault = default_sect\rlegacy = legacy_sect/' \
+        -e 's/\[default_sect\]\r# activate = 1/[default_sect]\ractivate = 1\r\r[legacy_sect]\ractivate = 1/' \
+  | tr '\r' '\n' \
+  > /tmp/openssl.cnf \
+  && mv /tmp/openssl.cnf /etc/ssl/openssl2.cnf
+
+echo "end"
